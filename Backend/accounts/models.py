@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser , BaseUserManager , PermissionManager
-
+from django.contrib.auth.models import AbstractBaseUser , BaseUserManager , PermissionsMixin
 
 
 class UsersManager(BaseUserManager):
@@ -15,8 +14,31 @@ class UsersManager(BaseUserManager):
         user.save()
         return user
     
-    def create_superuser(self, email, password=None ,**extrafields):
-        
-        
+    def create_superuser(self, email, password=None ,**extra_fields):
+        extra_fields.setdefaults("is_staff", True)
+        extra_fields.setdefaults("is_superuser", False)
+        return self.create_superuser(email , password , **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=200 , blank = True) 
+    last_name = models.CharField(max_length=200 , blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined  = models.DateTimeField(auto_now_add=True)
+    
+    object = UsersManager()
+    
+    USERNAME_FIELD = 'email'
+    
+    
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def __str__(self) -> str:
+        return self.email
+
+    
 
 
