@@ -9,16 +9,14 @@ class UsersManager(BaseUserManager):
 
         email  = self.normalize_email(email) # normalize is to verfiy if the email is in valid format 
         user = self.model(email = email, **extra_fields)
-        user.models.PositiveIntegerField(_(""))
-        user.set(password)
+        user.set_password(password)
         user.save()
         return user
     
     def create_superuser(self, email, password=None ,**extra_fields):
-        extra_fields.setdefaults("is_staff", True)
-        extra_fields.setdefaults("is_superuser", False)
-        return self.create_superuser(email , password , **extra_fields)
-
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", False)
+        return self.create_user(email,password,**extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -28,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined  = models.DateTimeField(auto_now_add=True)
     
-    object = UsersManager()
+    objects = UsersManager()
     
     USERNAME_FIELD = 'email'
     
