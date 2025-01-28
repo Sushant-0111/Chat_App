@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 # Serializer for Login user and Validate the user 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    id = serializers.CharField(max_length = 15,ready_only = True)
+    id = serializers.CharField(max_length = 15,read_only = True)
     password = serializers.CharField(max_length=255, write_only = True)
     
     
